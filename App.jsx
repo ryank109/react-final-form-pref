@@ -2,15 +2,15 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import Timer from './Timer';
 
-const onEnter = callback => ({ key }) => {
+const onEnter = (callback) => ({ key }) => {
   if (key === 'Enter') {
     callback();
   }
 };
 
-const fromEvent = callback => ({ target: { value } }) => callback(value);
+const fromEvent = (callback) => ({ target: { value } }) => callback(value);
 
-const range = n => [...Array(n).keys()];
+const range = (n) => [...Array(n).keys()];
 
 const noop = () => {};
 
@@ -18,6 +18,7 @@ const emptySubscription = {};
 const valueSubscription = { value: true };
 
 export default () => {
+  const [key, setKey] = useState(Math.random());
   const [startTime, setStartTime] = useState(Date.now());
   const [inputValue, setInputValue] = useState(2500);
   const [numOfFields, setNumOfFields] = useState(inputValue);
@@ -26,6 +27,7 @@ export default () => {
   const commitHandler = useCallback(() => {
     inputValue !== '' && setNumOfFields(parseInt(inputValue, 10));
     setStartTime(Date.now());
+    setKey(Math.random());
   }, [inputValue]);
 
   const inputChangeHandler = useCallback(fromEvent(setInputValue), [setInputValue]);
@@ -40,9 +42,9 @@ export default () => {
         </label>
         <button onClick={commitHandler}>Update</button>
       </p>
-      <Form onSubmit={noop} subscription={emptySubscription}>
+      <Form key={key} onSubmit={noop} subscription={emptySubscription}>
         {() =>
-          fields.map(index => (
+          fields.map((index) => (
             <Field key={index} name={`field_${index}`} subscription={valueSubscription}>
               {({ input }) => (
                 <label>
